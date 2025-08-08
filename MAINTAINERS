@@ -73,10 +73,6 @@ ltconfig; ltmain.sh; ltcf-*.sh
 move-if-change
 	Send bug reports and patches to bug-gnulib@gnu.org.
 
-symlink-tree
-	gcc: http://gcc.gnu.org
-	See libiberty.
-
 newlib/; libgloss/
 	http://sourceware.org/newlib/
 	Patches to newlib@sourceware.org.

@@ -94,19 +94,11 @@ AC_ARG_ENABLE(newlib-fno-builtin,
 
 
 dnl We may get other options which we don't document:
-dnl --with-target-subdir, --with-multisrctop, --with-multisubdir
+dnl --with-target-subdir, --with-multisubdir
 
 test -z "[$]{with_target_subdir}" && with_target_subdir=.
 
-if test "[$]{srcdir}" = "."; then
-  if test "[$]{with_target_subdir}" != "."; then
-    newlib_basedir="[$]{srcdir}/[$]{with_multisrctop}../$1"
-  else
-    newlib_basedir="[$]{srcdir}/[$]{with_multisrctop}$1"
-  fi
-else
-  newlib_basedir="[$]{srcdir}/$1"
-fi
+newlib_basedir="[$]{srcdir}/$1"
 AC_SUBST(newlib_basedir)
 
 abs_newlib_basedir=`cd "${newlib_basedir}" && pwd`

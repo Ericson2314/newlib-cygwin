@@ -4371,7 +4371,6 @@ TARG_INCLUDE_CP_DIR = \
 	if (cd $$srcdir 2>/dev/null && [ "`echo *.h`" != "*.h" ]); then cp $$srcdir/*.h $$dstdir/; fi
 
 CONFIG_STATUS_DEPENDENCIES = $(newlib_basedir)/configure.host
-MULTISRCTOP = 
 MULTIBUILDTOP = 
 MULTIDIRS = 
 MULTISUBDIR = 
