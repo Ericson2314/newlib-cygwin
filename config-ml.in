@@ -35,9 +35,9 @@
 #
 # if [ "${srcdir}" = "." ] ; then
 #   if [ "${with_target_subdir}" != "." ] ; then
-#     . ${with_multisrctop}../../config-ml.in
+#     . ${srcdir}/../../config-ml.in
 #   else
-#     . ${with_multisrctop}../config-ml.in
+#     . ${srcdir}/../config-ml.in
 #   fi
 # else
 #   . ${srcdir}/../config-ml.in
@@ -47,9 +47,9 @@
 # Things are complicated because 6 separate cases must be handled:
 # 2 (native, cross) x 3 (absolute-path, relative-not-dot, dot) = 6.
 #
-# srcdir=. is special.  It must handle make programs that don't handle VPATH.
-# To implement this, a symlink tree is built for each library and for each
-# multilib subdir.
+# srcdir=. is special.  We used to want to handle make programs that
+# don't handle VPATH.  To implement this, a symlink tree is built for
+# each library and for each multilib subdir.
 #
 # The build tree is layed out as
 #
@@ -59,6 +59,13 @@
 #          newlib
 #          m68881/
 #                 newlib
+#
+# (Now though, GNU Make is required, and GNU Make always supports VPATH.
+# We can therefore drop support for these symlink trees. And
+# accordingly, we can know that ${srcdir}/.. always does what we expect
+# in all supported configurations, and use that to further simplify this
+# multilib infrastructure. These simplifications are not yet
+# implemented.)
 #
 # The nice feature about this arrangement is that inter-library references
 # in the build tree work without having to care where you are.  Note that
@@ -72,14 +79,10 @@
 # Configure variables:
 # ${with_target_subdir} = "." for native, or ${target_alias} for cross.
 # Set by top level Makefile.
-# ${with_multisrctop} = how many levels of multilibs there are in the source
-# tree.  It exists to handle the case of configuring in the source tree:
-# ${srcdir} is not constant.
 # ${with_multisubdir} = name of multilib subdirectory (eg: m68020/m68881).
 #
 # Makefile variables:
 # MULTISRCTOP = number of multilib levels in source tree (+1 if cross)
-# (FIXME: note that this is different than ${with_multisrctop}.  Check out.).
 # MULTIBUILDTOP = number of multilib levels in build tree
 # MULTIDIRS = list of multilib subdirs (eg: m68000 m68020 ...)
 # (only defined in each library's main Makefile).
@@ -709,7 +712,6 @@ if [ -n "${multidirs}" ] && [ -z "${ml_norecursion}" ]; then
       fi
       ml_newsrcdir="."
       ml_srcdiroption=
-      multisrctop=${dotdot}
       ;;
     *)
       case "${srcdir}" in
@@ -721,7 +723,6 @@ if [ -n "${multidirs}" ] && [ -z "${ml_norecursion}" ]; then
         ;;
       esac
       ml_srcdiroption="-srcdir=${ml_newsrcdir}"
-      multisrctop=
       ;;
     esac
 
@@ -867,7 +868,7 @@ if [ -n "${multidirs}" ] && [ -z "${ml_norecursion}" ]; then
     fi
 
     if eval ${ml_config_env} ${ml_config_shell} ${ml_recprog} \
-	--with-multisubdir=${ml_dir} --with-multisrctop=${multisrctop} \
+	--with-multisubdir=${ml_dir} \
 	"${ac_configure_args}" ${ml_config_env} ${ml_srcdiroption} ; then
       true
     else
